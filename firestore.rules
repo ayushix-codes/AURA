@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User profile documents and subcollections
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+      
+      match /savedLooks/{lookId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      match /favorites/{professionalId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      match /bookings/{bookingId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+    
+    // Professionals directory
+    match /professionals/{professionalId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && request.auth.token.admin == true;
+    }
+    
+    // Visual briefs
+    match /visualBriefs/{briefId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+    
+    // Reviews
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

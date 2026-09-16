@@ -1,0 +1,6 @@
+{
+  "name": "AURA - Personalized Beauty & Style",
+  "description": "The AI layer between what you imagine and what gets created. Personalized looks, artisan matching, visual briefs, and booking dossier.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
